@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 import pickle
 import pandas as pd
+import os
+import uvicorn
 
 app = FastAPI()
 
@@ -52,5 +54,9 @@ def get_personalized_recommendation(user_input: dict):
     recommended_books = filtered_books[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS","F_PAGE","LINK"]].head(5)
 
     return {"recommended_books": recommended_books.to_dict(orient="records")}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # Default to 10000 for Render
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
 
