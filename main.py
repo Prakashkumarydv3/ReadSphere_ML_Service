@@ -23,7 +23,7 @@ def get_popular_books():
     """
     Returns the top 10 most popular books based on the popularity model.
     """
-    top_books = popularity_model[["BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS","F_PAGE","LINK"]].head(10)
+    top_books = popularity_model[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS","F_PAGE","LINK"]].head(10)
     print(popularity_model.columns)
 
     return {"popular_books": top_books.to_dict(orient="records")}
