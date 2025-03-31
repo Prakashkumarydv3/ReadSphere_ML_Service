@@ -16,16 +16,23 @@ app.add_middleware(
 )
 
 # Load Popularity Model
-with open("models/popular.pkl", "rb") as f:
+with open("models/popular2.pkl", "rb") as f:
     popularity_model = pickle.load(f)
 
 # Load Books Dataset & Similarity Model
-with open("models/books.pkl", "rb") as f:
+with open("models/books7.pkl", "rb") as f:
     books = pickle.load(f)
 
-with open("models/similarity.pkl", "rb") as f:
+with open("models/similarity2.pkl", "rb") as f:
     similarity = pickle.load(f)
 
+@app.get("/recommend/all_books")
+def get_all_books():
+    """
+    Returns all books in the dataset.
+    """
+    all_books = books[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE","RATERS" ,"A_RATINGS","F_PAGE","LINK"]]
+    return {"all_books": all_books.to_dict(orient="records")}
 
 @app.get("/recommend/popularity")
 def get_popular_books():
@@ -60,7 +67,7 @@ def get_personalized_recommendation(user_input: dict):
         return {"error": "No books found matching your preferences"}
 
     # Get top recommended books based on similarity
-    recommended_books = filtered_books[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS","F_PAGE","LINK"]].head(5)
+    recommended_books = filtered_books[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS","F_PAGE","LINK"]]
 
     return {"recommended_books": recommended_books.to_dict(orient="records")}
 
