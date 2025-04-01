@@ -9,7 +9,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://readaura.vercel.app/"],  # Allow all origins (change to ["http://localhost:3000"] for security)
+    allow_origins=["https://readaura.vercel.app"],  # Allow all origins (change to ["http://localhost:3000"] for security)
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
