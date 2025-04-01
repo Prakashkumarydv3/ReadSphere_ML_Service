@@ -45,31 +45,58 @@ def get_popular_books():
     return {"popular_books": top_books.to_dict(orient="records")}
 
 
+import numpy as np
+
 @app.post("/recommend/personalized")
 def get_personalized_recommendation(user_input: dict):
     """
     Recommends books based on user preferences.
     Example input: {"genre": "Fiction", "author": "J.K. Rowling", "min_rating": 4.0}
     """
-    genre = user_input.get("genre", "").lower()  # FIXED: Correct key
-    author = user_input.get("author", "").lower()
-    min_rating = float(user_input.get("min_rating", 0))  # FIXED: Ensure float value
+    genre = user_input.get("genre", "").lower().strip()
+    author = user_input.get("author", "").lower().strip()
+    min_rating = float(user_input.get("min_rating", 0))
 
-    # Filter books based on user input
-    filtered_books = books[  # ✅ FIXED: Using correct dataset
-        (books["GENERE"].str.lower().str.contains(genre, na=False)) &
-        (books["BOOK_AURTHOR"].str.lower().str.contains(author, na=False)) &
-        (books["A_RATINGS"] >= min_rating)
-    ]
+    # 🔹 Standardizing Dataset for Consistency
+    books["GENERE"] = books["GENERE"].str.strip().str.lower()
+    books["BOOK_AURTHOR"] = books["BOOK_AURTHOR"].str.strip().str.lower()
 
-    # If no books match, return an error
+    # 🔹 Step 1: Filter by Genre (Always Required)
+    filtered_books = books[books["GENERE"] == genre]
+
+    # 🔹 Step 2: Apply Additional Filters Only If Provided
+    if author:
+        filtered_books = filtered_books[filtered_books["BOOK_AURTHOR"].str.contains(author, na=False)]
+
+    if min_rating > 0:
+        filtered_books = filtered_books[filtered_books["A_RATINGS"] >= min_rating]
+
+    # 🔹 Fix: Fill NaN values to avoid JSON errors
+    filtered_books = filtered_books.fillna({
+        "BOOK_ID": 0,
+        "BOOK_TITLE": "Unknown",
+        "BOOK_AURTHOR": "Unknown",
+        "GENERE": "Unknown",
+        "A_RATINGS": 0.0,  # Ensure it's a float
+        "F_PAGE": "placeholder.svg",
+        "LINK": "#"
+    })
+
+    # 🔹 Convert Ratings to Float & Handle NaN issues
+    filtered_books["A_RATINGS"] = filtered_books["A_RATINGS"].replace([np.nan, None], 0.0).astype(float)
+
+    # 🔹 Debugging: Check If Books Were Filtered
+    print("Filtered Books:", filtered_books[["BOOK_TITLE", "GENERE"]].head())
+
     if filtered_books.empty:
         return {"error": "No books found matching your preferences"}
 
-    # Get top recommended books based on similarity
-    recommended_books = filtered_books[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS","F_PAGE","LINK"]]
+    recommended_books = filtered_books[["BOOK_ID", "BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "A_RATINGS", "F_PAGE", "LINK"]]
 
     return {"recommended_books": recommended_books.to_dict(orient="records")}
+
+
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Default to 10000 for Render
