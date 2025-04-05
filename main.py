@@ -4,6 +4,8 @@ import pickle
 import pandas as pd
 import os
 import uvicorn
+from pydantic import BaseModel
+import numpy
 
 app = FastAPI()
 
@@ -14,6 +16,17 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
 )
+
+class Book(BaseModel):
+    BOOK_ID: int
+    BOOK_TITLE: str
+    BOOK_AURTHOR: str
+    GENERE: str
+    LANGUAGE: str
+    A_RATINGS: float
+    RATERS: int
+    F_PAGE: str
+    LINK: str
 
 # Load Popularity Model
 with open("models/popular2.pkl", "rb") as f:
@@ -26,13 +39,63 @@ with open("models/books7.pkl", "rb") as f:
 with open("models/similarity2.pkl", "rb") as f:
     similarity = pickle.load(f)
 
+
 @app.get("/recommend/all_books")
 def get_all_books():
     """
     Returns all books in the dataset.
     """
-    all_books = books[["BOOK_ID","BOOK_TITLE", "BOOK_AURTHOR", "GENERE","RATERS" ,"A_RATINGS","F_PAGE","LINK"]]
-    return {"all_books": all_books.to_dict(orient="records")}
+    try:
+        # Columns you want to return
+        columns = ["BOOK_ID", "BOOK_TITLE", "BOOK_AURTHOR", "GENERE", "RATERS", "A_RATINGS", "F_PAGE", "LINK"]
+
+        # Fill NaN values to avoid serialization issues
+        all_books = books[columns].fillna({
+            "BOOK_ID": 0,
+            "BOOK_TITLE": "Unknown",
+            "BOOK_AURTHOR": "Unknown",
+            "GENERE": "Unknown",
+            "RATERS": 0,
+            "A_RATINGS": 0.0,
+            "F_PAGE": "placeholder.svg",
+            "LINK": "#"
+        })
+
+        # Ensure types are consistent (especially for ratings)
+        all_books["A_RATINGS"] = all_books["A_RATINGS"].astype(float)
+        all_books["RATERS"] = all_books["RATERS"].astype(int)
+
+        return {"all_books": all_books.to_dict(orient="records")}
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}
+
+@app.post("/admin/add_book")
+def add_book(book: Book):
+    global books  # Use the in-memory DataFrame
+
+    try:
+        # Convert new book to a DataFrame row
+        new_book_df = pd.DataFrame([book.dict()])
+
+        # Append the new book
+        books = pd.concat([books, new_book_df], ignore_index=True)
+
+        # Save the updated books back to the pickle file
+        with open("models/books7.pkl", "wb") as f:
+            pickle.dump(books, f)
+        
+        # Save the updated books back to the xlsx file as well
+        books.to_excel("data/books6.xlsx", index=False)
+
+
+        return {"message": "Book added successfully", "book": book.dict()}
+    except Exception as e:
+        return {"error": str(e)}
+
+
 
 @app.get("/recommend/popularity")
 def get_popular_books():
@@ -45,7 +108,7 @@ def get_popular_books():
     return {"popular_books": top_books.to_dict(orient="records")}
 
 
-import numpy as np
+
 
 @app.post("/recommend/personalized")
 def get_personalized_recommendation(user_input: dict):
