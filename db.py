@@ -1,6 +1,6 @@
-from databases import Database
-import sqlalchemy
-from dotenv import load_dotenv
+from databases import Database # type: ignore
+import sqlalchemy # type: ignore
+from dotenv import load_dotenv # type: ignore
 load_dotenv()
 import os
 DATABASE_URL = os.getenv("DATABASE_URL")
