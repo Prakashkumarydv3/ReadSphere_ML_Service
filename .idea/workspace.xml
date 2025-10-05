@@ -9,7 +9,7 @@
       <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/readauro-ml-service.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/readsphere-ml-service.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/model/popular.pkl" afterDir="false" />
@@ -44,12 +44,12 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/acer/PycharmProjects/readauro-ml-service/model"
+    "last_opened_file_path": "C:/Users/acer/PycharmProjects/readsphere-ml-service/model"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\acer\PycharmProjects\readauro-ml-service\model" />
+      <recent name="C:\Users\acer\PycharmProjects\readsphere-ml-service\model" />
     </key>
   </component>
   <component name="SharedIndexes">

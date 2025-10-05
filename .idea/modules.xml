@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/readauro-ml-service.iml" filepath="$PROJECT_DIR$/.idea/readauro-ml-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/readsphere-ml-service.iml" filepath="$PROJECT_DIR$/.idea/readsphere-ml-service.iml" />
     </modules>
   </component>
 </project>

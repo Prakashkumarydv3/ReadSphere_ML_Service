@@ -10,7 +10,7 @@ metadata = sqlalchemy.MetaData()
 
 books_table = sqlalchemy.Table(
     "books", metadata,
-    sqlalchemy.Column("BOOK_ID", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("BOOK_TITLE", sqlalchemy.String),
     sqlalchemy.Column("BOOK_AUTHOR", sqlalchemy.String),
     sqlalchemy.Column("GENRE", sqlalchemy.String),
@@ -18,4 +18,5 @@ books_table = sqlalchemy.Table(
     sqlalchemy.Column("A_RATINGS", sqlalchemy.Float),
     sqlalchemy.Column("F_PAGE", sqlalchemy.String),
     sqlalchemy.Column("LINK", sqlalchemy.String),
+    sqlalchemy.Column("slug", sqlalchemy.String),
 )
